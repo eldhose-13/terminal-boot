@@ -2,10 +2,10 @@ package com.shopping.terminal.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class PointOfSaleServiceImpl implements PointOfSaleService {
 
 		/* <<<< Products and Pricing Structutre hardcoded >>>>> */
 		/* PriceData (unitPrice, GroupCount,GroupPrice) */
-		HashMap<String, PriceData> pricing = new HashMap<String, PriceData>();
+		ConcurrentHashMap<String, PriceData> pricing = new ConcurrentHashMap<>();
 		pricing.put("A1", new PriceData(1.25, 3, 3));
 		pricing.put("3-Q", new PriceData(4.25, 1, 4.25));
 		pricing.put("45K11", new PriceData(1, 6, 5));
@@ -53,9 +53,8 @@ public class PointOfSaleServiceImpl implements PointOfSaleService {
 				throw new InvalidPricingException("Error! Couldn't load price for Product with code " + entry.getKey());
 
 			totalPrice = totalPrice
-					.add(new BigDecimal((entry.getValue() % curPriceData.getGroupCount()) * curPriceData.getUnitPrice()
-							+ ((entry.getValue() / curPriceData.getGroupCount()) * curPriceData.getGroupPrice())));
-
+					.add(BigDecimal.valueOf(((entry.getValue() % curPriceData.getGroupCount()) * curPriceData.getUnitPrice()
+							+ ((entry.getValue() / curPriceData.getGroupCount()) * curPriceData.getGroupPrice()))));
 		}
 		totalPrice.setScale(2, RoundingMode.CEILING);
 		return totalPrice;

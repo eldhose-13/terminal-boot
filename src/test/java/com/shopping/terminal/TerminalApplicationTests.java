@@ -21,7 +21,7 @@ class TerminalApplicationTests {
 	private PointOfSaleService pointOfSaleService;
 	
 	@Test
-	public void calculateTotaltest() {
+	void calculateTotaltest() {
 		
 		List<String> testProducts = new ArrayList<String>(); 
 		testProducts.add("A1");
@@ -42,7 +42,7 @@ class TerminalApplicationTests {
 	}
 	
 	@Test
-	public void calculateInvalidTotaltest() {
+	void calculateInvalidTotaltest() {
 		
 		List<String> testProducts = new ArrayList<String>(); 
 		testProducts.add("A1");
@@ -59,6 +59,25 @@ class TerminalApplicationTests {
 		} catch (Exception e) {
 			assertTrue("Error! Couldn't load price for Product with code QQQ".equals(e.getLocalizedMessage()));
 		}
+		
+	}
+	
+	@Test
+	public void calculateTotaltest2() {
+		
+		List<String> testProducts = new ArrayList<String>(); 
+		testProducts.add("A1");
+		testProducts.add("3-Q");
+		testProducts.add("45K11");
+		testProducts.add("X1");
+		
+		BigDecimal total = new BigDecimal(0);
+		try {
+			total = pointOfSaleService.calculateTotal(testProducts);
+		} catch (Exception e) {
+			fail();
+		}
+		assertEquals(new BigDecimal(7.25), total);
 		
 	}
 
